@@ -1,0 +1,1796 @@
+
+Non - Preemptive Scheduling
+25 January 2023
+12:50 AM
+FCFS Scheduling
+#include<iostream>
+#include<iomanip>
+using namespace std;
+#define size 20
+int order[50];
+float average(int *matrix,int n)
+{
+float avg = 0.0;
+for(int i=0;i<n;i++)
+avg += matrix[i];
+return avg/n;
+}
+{
+void sort_arr(int arr[],int n)
+int copy[n];
+for(int i=0;i<n;i++)
+{
+order[i]=i;
+copy[i]=arr[i];
+}
+for(int i=0;i<n-1;i++)
+{
+for(int j=i+1;j<n;j++)
+{
+if(copy[i]>copy[j])
+{
+int temp=copy[i],t=order[i];
+copy[i]=copy[j];
+order[i]=order[j];
+copy[j]=temp;
+order[j]=t;
+}
+}
+}
+}
+{
+void fcfs(int burst[], int arr[],int n)
+sort_arr(arr,n);
+int complete[n],TAT[n], WT[n],time=0;
+for(int i=0;i<n;i++)
+{
+int j= *(order+i);
+Page | 1
+time+=burst[j];
+complete[j]=time;
+TAT[j]=complete[j]-arr[j];
+WT[j]=TAT[j]-burst[j];
+}
+cout<<"Gantt Chart: "<<endl<<"----"<<0<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<" P"<<order[i]+1<<endl;
+cout<<"----"<<complete[order[i]]<<endl;
+}
+cout<<endl<<endl;
+cout<<"Process"<<setw(size)<<"Burst Time"<<setw(size)<<"Arrival
+Time"<<setw(size)<<"Turnaround Time"<<setw(size)<<"Waiting Time"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i+1<<setw(size)<<burst[i]<<setw(size)<<arr[i]<<setw(size)<<TAT[i]<<setw(si
+ze)<<WT[i]<<endl;
+}
+cout<<endl<<"Average waiting time : "<<setprecision(2)<<average(WT,n);
+cout<<endl<<"Average turn-around time : "<<average(TAT,n);
+}
+{
+int main()
+int n;
+cin>>n;
+int burst[n],arr[n];
+cout<<"Enter number of processes: ";
+for(int i=0;i<n;i++)
+{
+cout<<"Process "<<i+1<<endl;
+cout<<"Enter Burst Time: ";
+cin>>burst[i];
+cout<<"Enter Arrival Time: ";
+cin>>arr[i];
+}
+cout<<endl;
+fcfs(burst,arr,n);
+}
+SJF Scheduling
+#include<iostream>
+#include<iomanip>
+using namespace std;
+Page | 2
+int order[50];
+float average(int *matrix,int n)
+{
+float avg = 0.0;
+for(int i=0;i<n;i++)
+avg += matrix[i];
+return avg/n;
+}
+{
+void sort_arr(int bt[],int n)
+int copy[n];
+for(int i=0;i<n;i++)
+{
+order[i]=i;
+copy[i]=bt[i];
+}
+for(int i=0;i<n-1;i++)
+{
+for(int j=i+1;j<n;j++)
+{
+if(copy[i]>copy[j])
+{
+int temp=copy[i],t=order[i];
+copy[i]=copy[j];
+order[i]=order[j];
+copy[j]=temp;
+order[j]=t;
+}
+}
+}
+}
+{
+void sjf(int burst[], int n)
+sort_arr(burst,n);
+int TAT[n], WT[n],time=0;
+for(int i=0;i<n;i++)
+{
+int j= *(order+i);
+time+=burst[j];
+TAT[j]=time;
+WT[j]=TAT[j]-burst[j];
+}
+cout<<"Gantt Chart: "<<endl<<"----"<<0<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<" P"<<order[i]+1<<endl;
+Page | 3
+cout<<"----"<<TAT[order[i]]<<endl;
+}
+cout<<endl<<endl;
+cout<<"Process"<<setw(size)<<"Burst Time"<<setw(size)<<"Turnaround
+Time"<<setw(size)<<"Waiting Time"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i+1<<setw(size)<<burst[i]<<setw(size)<<TAT[i]<<setw(size)<<WT[i]<<endl;
+}
+cout<<endl<<"Average waiting time : "<<average(WT,n);
+cout<<endl<<"Average turn-around time : "<<average(TAT,n);
+}
+{
+int main()
+int n;
+cin>>n;
+int burst[n];
+cout<<"Enter number of processes: ";
+for(int i=0;i<n;i++)
+{
+cout<<"Process "<<i+1<<endl;
+cout<<"Enter Burst Time: ";
+cin>>burst[i];
+}
+cout<<endl;
+sjf(burst,n);
+}
+Priority Scheduling
+#include<iostream>
+#include<iomanip>
+using namespace std;
+int order[50];
+float average(int *matrix,int n)
+{
+float avg = 0.0;
+for(int i=0;i<n;i++)
+avg += matrix[i];
+return avg/n;
+}
+{
+void sort_arr(int pr[],int n)
+int copy[n];
+for(int i=0;i<n;i++)
+Page | 4
+{
+order[i]=i;
+copy[i]=pr[i];
+}
+for(int i=0;i<n-1;i++)
+{
+for(int j=i+1;j<n;j++)
+{
+if(copy[i]>copy[j])
+{
+int temp=copy[i],t=order[i];
+copy[i]=copy[j];
+order[i]=order[j];
+copy[j]=temp;
+order[j]=t;
+}
+}
+}
+}
+{
+void priority(int burst[], int pr[],int n)
+sort_arr(pr,n);
+int TAT[n], WT[n],time=0;
+for(int i=0;i<n;i++)
+{
+int j= *(order+i);
+time+=burst[j];
+TAT[j]=time;
+WT[j]=TAT[j]-burst[j];
+}
+cout<<"Gantt Chart: "<<endl<<"----"<<0<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<" P"<<order[i]+1<<endl;
+cout<<"----"<<TAT[order[i]]<<endl;
+}
+cout<<endl<<endl;
+cout<<"Process"<<setw(size)<<"Burst
+Time"<<setw(size)<<"Priority"<<setw(size)<<"Turnaround Time"<<setw(size)<<"Waiting
+Time"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i+1<<setw(size)<<burst[i]<<setw(size)<<pr[i]<<setw(size)<<TAT[i]<<setw(siz
+e)<<WT[i];
+cout<<endl;
+}
+Page | 5
+cout<<endl<<"Average waiting time : "<<average(WT,n);
+cout<<endl<<"Average turn-around time : "<<average(TAT,n);
+}
+{
+int main()
+int n;
+cin>>n;
+int burst[n],pr[n];
+cout<<"Enter number of processes: ";
+for(int i=0;i<n;i++)
+{
+cout<<"Process "<<i+1<<endl;
+cout<<"Enter Burst Time: ";
+cin>>burst[i];
+cout<<"Enter Priority: ";
+cin>>pr[i];
+}
+cout<<endl;
+priority(burst,pr,n);
+}
+Preemptive Priority
+31 January 2023
+11:31 PM
+Preemptive Priority
+#include<bits/stdc++.h>
+#include<iostream>
+#define size 20
+using namespace std;
+float average(int *matrix,int n)
+{
+float avg = 0.0;
+for(int i=0;i<n;i++)
+avg += matrix[i];
+return avg/n;
+}
+{
+void PreemptivePriority(int n, int burst[], int arrival[], int priority[])
+int rem_burst[n], WT[n], TAT[n],completion[n];
+int smallest, count = 0,totaltime=0;
+for(int i=0; i<n; i++)
+{
+rem_burst[i] = burst[i];
+Page | 6
+totaltime+=burst[i];
+}
+int temp_process_no[totaltime] = {0};
+priority[n]=9999;
+for(int time=0; count != n; time++)
+{
+smallest = n;
+for(int i=0; i<n; i++)
+{
+if(arrival[i]<=time && priority[i]<priority[smallest] && rem_burst[i]>0)
+smallest = i;
+}
+rem_burst[smallest]--;
+temp_process_no[time] = smallest;
+if(rem_burst[smallest] == 0)
+{
+count++;
+completion[smallest] = time+1;
+TAT[smallest] = completion[smallest] - arrival[smallest];
+WT[smallest] = TAT[smallest] - burst[smallest];
+}
+}
+cout<<endl<<"Process"<<setw(size)<<"Burst Time"<<setw(size)<<"Arrival
+Time"<<setw(size)<<"Priority"<<setw(size)<<"Turnaround Time"<<setw(size)<<"Waiting
+Time"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i<<setw(size)<<burst[i]<<setw(size)<<arrival[i]<<setw(size)<<priority[i]<<set
+w(size)<<TAT[i]<<setw(size)<<WT[i]<<endl;
+}
+cout<<endl<<"Average waiting time : "<<average(WT,n);
+cout<<endl<<"Average turn-around time : "<<average(TAT,n);
+cout<<endl<<"Gantt Chart:"<<endl;
+for(int i = 0; i < totaltime; i++)
+{
+cout<<"-----"<<i<<endl;
+cout<<" P"<<temp_process_no[i]<<endl;
+}
+cout<<"-----"<<totaltime<<endl;
+}
+{
+int main()
+int n;
+cin>>n;
+cout<<"Enter the number of processes: ";
+int burst[n], arrival[n],priority[n+1];
+Page | 7
+for(int i=0;i<n;i++)
+{
+cout<<"Process "<<i+1<<endl;
+cout<<"Enter Burst Time: ";
+cin>>burst[i];
+cout<<"Enter Arrival Time: ";
+cin>>arrival[i];
+cout<<"Enter Priority Time: ";
+cin>>priority[i];
+}
+PreemptivePriority(n,burst,arrival,priority);
+}
+SRTN
+#include<bits/stdc++.h>
+#include<iostream>
+#define size 20
+using namespace std;
+float average(int *matrix,int n)
+{
+float avg = 0.0;
+for(int i=0;i<n;i++)
+avg += matrix[i];
+return avg/n;
+}
+{
+void SRTN(int n, int burst[], int arrival[])
+int rem_burst[n+1], WT[n], TAT[n],completion[n];
+int smallest, count = 0,totaltime=0;
+for(int i=0; i<n; i++)
+{
+rem_burst[i] = burst[i];
+totaltime+=burst[i];
+}
+int temp_process_no[totaltime] = {0};
+rem_burst[n] = 9999;
+for(int time=0; count != n; time++)
+{
+smallest = n;
+for(int i=0; i<n; i++)
+{
+if(arrival[i]<=time && rem_burst[i]<rem_burst[smallest] && rem_burst[i]>0)
+smallest = i;
+}
+rem_burst[smallest]--;
+Page | 8
+temp_process_no[time] = smallest;
+if(rem_burst[smallest] == 0)
+{
+count++;
+completion[smallest] = time+1;
+TAT[smallest] = completion[smallest] - arrival[smallest];
+WT[smallest] = TAT[smallest] - burst[smallest];
+}
+}
+cout<<endl<<"Gantt Chart:"<<endl;
+for(int i = 0; i < totaltime; i++)
+{
+cout<<"-----"<<i<<endl;
+cout<<" P"<<temp_process_no[i]<<endl;
+}
+cout<<"-----"<<totaltime<<endl;
+cout<<endl<<"Process"<<setw(size)<<"Burst Time"<<setw(size)<<"Arrival
+Time"<<setw(size)<<"Turnaround Time"<<setw(size)<<"Waiting Time"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i<<setw(size)<<burst[i]<<setw(size)<<arrival[i]<<setw(size)<<TAT[i]<<setw(s
+ize)<<WT[i]<<endl;
+}
+cout<<endl<<"Average waiting time : "<<average(WT,n);
+cout<<endl<<"Average turn-around time : "<<average(TAT,n);
+}
+{
+int main()
+int n;
+cin>>n;
+cout<<"Enter the number of processes: ";
+int burst[n], arrival[n];
+for(int i=0;i<n;i++)
+{
+cout<<"Process "<<i+1<<endl;
+cout<<"Enter Burst Time: ";
+cin>>burst[i];
+cout<<"Enter Arrival Time: ";
+cin>>arrival[i];
+}
+SRTN(n,burst,arrival);
+}
+Round Robin
+#include<iostream>
+#include<iomanip>
+Page | 9
+#define size 20
+#define queue_size 30
+#define MAX 30
+using namespace std;
+int queue[queue_size], front=-1,rear=-1;
+void insert(int k)
+{
+if(front==-1)
+front=0;
+rear= (rear+1)%queue_size;
+queue[rear]=k;
+}
+{
+int del()
+int k=queue[front];
+if(front==rear)
+{
+front=-1,rear=-1;
+}
+else
+front = (front+1)%queue_size;
+return k;
+}
+{
+float average(int *matrix,int n)
+float avg = 0.0;
+for(int i=0;i<n;i++)
+avg += matrix[i];
+return avg/n;
+}
+void RoundRobin(int n, int burst[], int arrival[],int quantum)
+{
+int rem_burst[n+1], WT[n], TAT[n],completion[n];
+int totaltime=0;
+for(int i=0; i<n; i++)
+{
+rem_burst[i] = burst[i];
+totaltime+=burst[i] ;
+}
+int temp_process[totaltime] = {0}, temp_time[totaltime]={0}, arrived_process[n]={0};
+int k=0,tracker,next=-1;
+for(int time=0; time<totaltime; time++)
+Page | 10
+{
+//insert process into queue if it
+has just arrived
+for(int i=0;i<n;i++)
+{
+if(arrival[i]<=time && arrived_process[i]==0)
+{
+insert(i);
+arrived_process[i]=1;
+}
+}
+{
+//if next process is not set
+if(next==-1)
+next=del();
+temp_process[k] = next;
+tracker=0;
+}
+// if tracker<quantum and there is burst time
+remaining
+if(tracker!=quantum && rem_burst[next]>0)
+{
+rem_burst[next]--;
+tracker++;
+// if tracker<quantum and there is burst time remaining go to next iteration
+if(tracker!=quantum && rem_burst[next]>0)
+continue;
+}
+temp_time[k++]=time+1;
+if(rem_burst[next]==0)
+{
+completion[next] = time+1;
+TAT[next] = completion[next] - arrival[next];
+WT[next] = TAT[next] - burst[next];
+next=-1;
+//preemption of process
+//preemption due to completion
+}
+//preemption due to expired time
+quantums
+else
+{
+insert(next);
+next=-1;
+}
+}
+cout<<endl<<"Gantt Chart:"<<endl;
+cout<<"-----0"<<endl;
+for(int i = 0; i < k; i++)
+Page | 11
+{
+cout<<" P"<<temp_process[i]<<endl;
+cout<<"-----"<<temp_time[i]<<endl;
+}
+cout<<endl<<"Process"<<setw(size)<<"Burst Time"<<setw(size)<<"Arrival
+Time"<<setw(size)<<"Turnaround Time"<<setw(size)<<"Waiting Time"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i<<setw(size)<<burst[i]<<setw(size)<<arrival[i]<<setw(size)<<TAT[i]<<setw(s
+ize)<<WT[i]<<endl;
+}
+cout<<endl<<"Average waiting time : "<<average(WT,n);
+cout<<endl<<"Average turn-around time : "<<average(TAT,n);
+}
+{
+int main()
+int n, quantum;
+cout<<"Enter the number of processes: ";
+cin>>n;
+int burst[n], arrival[n];
+for(int i=0;i<n;i++)
+{
+cout<<"Process "<<i+1<<endl;
+cout<<"Enter Burst Time: ";
+cin>>burst[i];
+cout<<"Enter Arrival Time: ";
+cin>>arrival[i];
+}
+cout<<"Enter the time quantum: ";
+cin>>quantum;
+RoundRobin(n,burst,arrival,quantum);
+}
+Producer - Consumer Problem
+25 January 2023
+12:56 AM
+Producer - Consumer Problem
+#include<iostream>
+#include <iomanip>
+using namespace std;
+int mutex=1, full=0, empty, in=0, out=0, counter=0;
+int buffer_size;
+Page | 12
+int buffer[100];
+int signal(int S)
+{
+S++;
+}
+{
+int wait(int S)
+while(S<0)
+{
+cout<<endl<<"Cannot add an item\n";
+return 0;
+}
+S--;
+}
+{
+void produce()
+if(counter==buffer_size)
+{
+cout<<"\t Storage full"<<endl;
+}
+{
+else
+int next_prod;
+cout<<"Enter an item to produce: ";
+cin>>next_prod;
+wait(empty);
+wait(mutex);
+buffer[in] = next_prod;
+in = (in + 1)%buffer_size;
+signal(mutex);
+signal(full);
+cout<<endl<<"Item produced: "<<next_prod;
+counter++;
+}
+}
+{
+void consume()
+if(counter==0)
+{
+cout<<endl<<"Storage empty"<<endl;
+}
+{
+else
+wait(full);
+wait(mutex);
+int next_cons;
+next_cons = buffer[out];
+Page | 13
+out = (out+1) % buffer_size;
+signal(mutex);
+signal(empty);
+cout<<endl<<"Item consumed: "<<next_cons;
+counter--;
+}
+}
+{
+int main()
+int choice;
+cout<<"Enter buffer size: ";
+cin>>buffer_size;
+empty = buffer_size;
+do
+{
+cout<<endl<<"Select the operation to be performed: 1.Produce 2.Consume 3. Exit"<<endl;
+cin>>choice;
+switch(choice)
+{
+case 1: produce();
+break;
+case 2: consume();
+break;
+case 3: break;
+default: cout<<"Select a valid option"<<endl;
+}
+}while(choice!=3);
+return 0;
+}
+Banker's Algorithm
+25 January 2023
+01:28 AM
+Banker's Algorithm
+#include<iostream>
+#include<iomanip>
+#include<stdlib.h>
+using namespace std;
+int m, n, flag;
+int allocation[10][10], maximum[10][10], need[10][10];
+int available[10];
+void safety()
+{
+int safe[n], work[m];
+bool finish[n];
+Page | 14
+for(int i=0;i<n;i++)
+{
+safe[i]=-1;
+finish[i]=false;
+}
+for(int i=0; i<m; i++)
+work[i] = available[i];
+int k=0, loop_flag;
+do
+{
+loop_flag=0;
+for(int i=0; i<n; i++)
+{
+flag=0;
+for(int j=0; j<m; j++)
+{
+if(finish[i]==false && need[i][j]<=work[j])
+continue;
+else
+flag=1;
+}
+{
+if(flag==0)
+finish[i] = true;
+for(int j=0; j<m; j++)
+work[j] = work[j] + allocation[i][j];
+safe[k]=i;
+k++;
+loop_flag=1;
+}
+}
+flag=0;
+for(int i=0; i<n; i++)
+{
+if(finish[i]==false)
+flag=1;
+}
+if(flag==0)
+break;
+if(loop_flag==0)
+break;
+}while(true);
+//printing safe sequence
+if(flag==0)
+{
+cout<<endl<<"Safe Sequence: ";
+for(int j=0; j<n; j++)
+Page | 15
+cout<<safe[j]<<" -> ";
+}
+else
+cout<<endl;
+cout<<endl<<"No Safe sequence exists";
+}
+{
+void display()
+cout<<endl<<"Allocation \t Maximum \t Need \t Available"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<setiosflags(ios::right)<<" ";
+for(int j=0;j<m;j++)
+cout<<allocation[i][j]<<" ";
+cout<<setw(11);
+for(int j=0;j<m;j++)
+cout<<maximum[i][j]<<" ";
+cout<<setw(8);
+for(int j=0;j<m;j++)
+cout<<need[i][j]<<" ";
+cout<<setw(6);
+for(int j=0;j<m && i==0;j++)
+cout<<available[j]<<" ";
+cout<<endl;
+}
+}
+{
+int main()
+cout<<"Enter the number of Processes: ";
+cin>>n;
+cout<<"Enter the number of Resource types: ";
+cin>>m;
+cout<<"Enter Allocated Resources for each process:"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"P"<<i<<": ";
+for(int j=0;j<m;j++)
+cin>>allocation[i][j];
+}
+cout<<endl<<"Enter maximum Resources for each process:"<<endl;
+for(int i=0;i<n;i++)
+{
+cout<<"R"<<i+1<<": ";
+Page | 16
+for(int j=0;j<m;j++)
+cin>>maximum[i][j];
+}
+cout<<endl<<"Enter Available Resources:"<<endl;
+for(int i=0;i<m;i++)
+cin>>available[i];
+//Need matrix
+for(int i=0;i<n;i++)
+{
+for(int j=0;j<m;j++)
+need[i][j] = maximum[i][j] - allocation[i][j];
+}
+//printing matrices
+display();
+//safety algo
+safety();
+char ans='y';
+//Request algo
+do{
+int request[m], p;
+cout<<endl<<"Enter Process Number: ";
+cin>>p;
+cout<<"Enter Request: ";
+for(int i=0; i<m; i++)
+cin>>request[i];
+for(int i=0; i<m; i++)
+{
+if(need[p][i]<request[i])
+{
+cout<<endl<<"Process exceeded maximum claim for resources.
+\nRequest cannot be granted."<<endl;
+goto end;
+}
+{
+if(available[i]<request[i])
+cout<<endl<<"Process must wait. Resources not available."<<endl;
+goto end;
+}
+}
+for(int i=0; i<m; i++)
+{
+available[i] -= request[i];
+allocation[p][i] += request[i];
+Page | 17
+need[p][i] -= request[i];
+}
+cout<<endl<<"Temporary"<<endl;
+display();
+//check if request can be granted;
+safety();
+if(flag==1)
+{
+cout<<"Request cannot be granted."<<endl;
+for(int i=0; i<m; i++)
+{
+available[i] += request[i];
+allocation[p][i] -= request[i];
+need[p][i] += request[i];
+}
+cout<<endl<<"States Restored:"<<endl;
+display();
+}
+else
+{
+cout<<endl<<"Safe Sequence exists and request can be granted immediately to
+process.
+\nSnapshot after request:"<<endl;
+display();
+}
+end:
+cout<<endl<<"Try another Process?(Y/N) ";
+cin>>ans;
+}while(ans=='y' || ans=='Y');
+}
+Page Replacement
+31 January 2023
+11:38 PM
+LRU Replacement
+#include<iostream>
+#include<iomanip>
+using namespace std;
+int frames[20], pages[30], time[25];
+int faults=0,hits=0;
+int LRU(int f)
+{
+int i, minimum = time[0], pos = 0;
+for(i=1; i<f; i++)
+Page | 18
+{
+if(time[i] < minimum)
+{
+minimum = time[i];
+pos = i;
+}
+}
+return pos;
+}
+{
+int main()
+int nf, np, flag1, flag2, i, j, pos, counter=0;
+cout<<"Enter number of Frames: ";
+cin>>nf;
+cout<<"Enter number of pages: ";
+cin>>np;
+cout<<"Enter pages: ";
+for(i=0; i<np; i++)
+cin>>pages[i];
+for(i=0; i<nf; i++)
+frames[i] = -1;
+cout<<endl;
+cout<<setw(20)<<"Iteration";
+for(i=0; i<nf; i++)
+{
+cout<<setw(3)<<"F"<<i+1<<" ";
+}
+cout<<endl;
+//LRU algorithm
+for(i=0; i<np; i++)
+{
+cout<<setw(18)<<"Allocating page "<<pages[i];
+flag1 = flag2 = 0;
+for(j=0; j<nf; j++)
+{
+//if page was already allocated a frame; page hit
+if(frames[j] == pages[i])
+{
+counter++;
+hits++;
+time[j] = counter;
+flag1 = flag2 = 1;
+break;
+}
+}
+//If its a miss, flag1=0
+Page | 19
+if(flag1 == 0)
+{
+for(j=0; j<nf; j++)
+{
+if(frames[j] == -1) {
+counter++;
+faults++;
+frames[j] = pages[i];
+time[j] = counter;
+flag2 = 1;
+break;
+//If a frame is empty
+}
+}
+}
+//If frames are occupied and none match the page, then flag2 = 0
+if(flag2 == 0)
+{
+//call LRU to find position,pos of LRU page
+pos = LRU(nf);
+counter++;
+faults++;
+frames[pos] = pages[i];
+time[pos] = counter;
+}
+//print
+for(j=0; j<nf; j++)
+{
+if(frames[j]!=-1)
+cout<<setw(5)<<frames[j];
+else
+cout<<setw(5)<<"-";
+}
+cout<<endl;
+}
+cout<<endl<<endl<<"Total Page faults = "<<faults;
+cout<<endl<<"Total Page hits = "<<hits;
+}
+Optimal Replacement
+#include<iostream>
+#include<iomanip>
+#include<algorithm>
+using namespace std;
+int frames[20], pages[30];
+int faults=0,hits=0;
+int Optimal(int f, int current,int p)
+Page | 20
+{
+int temp[f];
+int k=0,flag;
+for(int i=0;i<f;i++) {
+//for each frame in frames
+flag=0;
+for(int j=current+1;j<p;j++) {
+//compare with each page after current page
+if(frames[i]==pages[j]) //find first occurence of page
+{
+temp[k++]=j;
+flag=1;
+break;
+}
+}
+if(!flag) //if page doesn't occur anymore, corresponding frame can be replaced
+return i;
+}
+//if all pages in the frames occur further in the requests, find the largest occuring page
+int i=0, max=temp[0],pos=i;
+for(i=1; i<f; i++)
+{
+if(temp[i] > max)
+{
+max = temp[i];
+pos = i;
+}
+}
+return pos;
+}
+{
+int main()
+int nf, np, flag1, flag2, i, j, pos, counter=0;
+cout<<"Enter number of Frames: ";
+cin>>nf;
+cout<<"Enter number of pages: ";
+cin>>np;
+cout<<"Enter pages: ";
+for(i=0; i<np; i++)
+cin>>pages[i];
+for(i=0; i<nf; i++)
+frames[i] = -1;
+cout<<endl;
+cout<<setw(20)<<"Iteration";
+for(i=0; i<nf; i++)
+{
+cout<<setw(3)<<"F"<<i+1<<" ";
+Page | 21
+}
+cout<<endl;
+//Optimal algorithm
+for(i=0; i<np; i++)
+{
+cout<<setw(18)<<"Allocating page "<<pages[i];
+flag1 = flag2 = 0;
+for(j=0; j<nf; j++)
+{
+//if page was already allocated a frame
+if(frames[j] == pages[i])
+{
+hits++;
+flag1 = flag2 = 1;
+break;
+}
+}
+//If a frame is empty, flag1=0
+if(flag1 == 0)
+{
+for(j=0; j<nf; j++)
+{
+if(frames[j] == -1)
+{
+faults++;
+frames[j] = pages[i];
+flag2 = 1;
+break;
+}
+}
+}
+//If frames are occupied and none match the page, then flag2 = 0
+if(flag2 == 0)
+{
+//call Optimal to find position
+pos = Optimal(nf,i,np);
+faults++;
+frames[pos] = pages[i];
+}
+//print
+for(j=0; j<nf; j++)
+{
+if(frames[j]!=-1)
+cout<<setw(5)<<frames[j];
+else
+cout<<setw(5)<<"-";
+}
+cout<<endl;
+Page | 22
+}
+cout<<endl<<endl<<"Total Page faults = "<<faults;
+cout<<endl<<"Total Page hits = "<<hits;
+}
+FIFO Replacement
+#include<iostream>
+#include<iomanip>
+using namespace std;
+int frames[20], pages[30], queue[20],front=-1,rear=-1;
+int faults=0,hits=0;
+void insert(int k,int f)
+{
+if(front==-1)
+front=0;
+rear= (rear+1)%f;
+queue[rear]=k;
+}
+{
+int del(int f)
+int k=queue[front];
+front = (front+1)%f;
+return k;
+}
+{
+int FIFO(int f)
+int page=del(f),pos;
+for(int i=0;i<f;i++)
+if(page==frames[i])
+pos=i;
+return pos;
+}
+{
+int main()
+int nf, np, flag1, flag2, i, j, pos, counter=0;
+cout<<"Enter number of Frames: ";
+cin>>nf;
+cout<<"Enter number of pages: ";
+cin>>np;
+cout<<"Enter pages: ";
+for(i=0; i<np; i++)
+cin>>pages[i];
+for(i=0; i<nf; i++)
+frames[i] = -1;
+Page | 23
+cout<<endl;
+cout<<setw(20)<<"Iteration";
+for(i=0; i<nf; i++)
+{
+cout<<setw(3)<<"F"<<i+1<<" ";
+}
+cout<<endl;
+//FIFO algorithm
+for(i=0; i<np; i++)
+{
+cout<<setw(18)<<"Allocating page "<<pages[i];
+flag1 = flag2 = 0;
+for(j=0; j<nf; j++)
+{
+//if page was already allocated a frame; page hit
+if(frames[j] == pages[i])
+{
+hits++;
+flag1 = flag2 = 1;
+break;
+}
+}
+//If its a miss, flag1=0
+if(flag1 == 0)
+{
+for(j=0; j<nf; j++)
+{
+if(frames[j] == -1) //If a frame is empty
+{
+faults++;
+frames[j] = pages[i];
+insert(frames[j],nf); //insert into queue
+flag2 = 1;
+break;
+}
+}
+}
+//If frames are occupied and none match the page, then flag2 = 0
+if(flag2 == 0)
+{
+//call FIFO to find position
+pos = FIFO(nf);
+faults++;
+frames[pos] = pages[i];
+insert(frames[pos],nf);
+}
+//print
+for(j=0; j<nf; j++)
+Page | 24
+{
+if(frames[j]!=-1)
+cout<<setw(5)<<frames[j];
+else
+cout<<setw(5)<<"-";
+}
+cout<<endl;
+}
+cout<<endl<<endl<<"Total Page faults = "<<faults;
+cout<<endl<<"Total Page hits = "<<hits;
+}
+Disk Scheduling
+22 January 2023
+12:16 AM
+FCFS Scheduling
+#include <iostream>
+#include <math.h>
+using namespace std;
+int total_head_movement = 0,n,current_head;
+int request[30];
+void fcfs(int block)
+{
+for(int i=0;i<n;i++)
+{
+total_head_movement += abs(request[i]-current_head);
+current_head = request[i];
+}
+cout<<"The Total Disk Head Movement is: " << total_head_movement << endl;
+cout<<"Track Sequence : ";
+for(int i=0;i<n;i++)
+cout << request[i] << " ";
+cout << endl;
+}
+{
+int main()
+int block;
+cout<<"Enter the Block Size of the Disk: ";
+cin>>block;
+cout<<endl<<"Enter the number of Disk Requests: ";
+cin>>n;
+cout<<"Enter the Disk Requests to be Searched : ";
+for(int i=0;i<n;i++)
+scanf("%d",&request[i]);
+Page | 25
+cout<<endl<<"Enter the Current Disk Head Position: ";
+cin>>current_head;
+fcfs(block);
+}
+SSTF Scheduling
+#include <iostream>
+#include <math.h>
+using namespace std;
+int total_head_movement = 0,n,head;
+int request[30];
+void difference(int head,int diff[][2])
+{
+for(int i = 0; i < n; i++)
+diff[i][0] = abs(head - request[i]);
+}
+{
+int findmin(int diff[][2], int n)
+int index = -1;
+int minimum = 9999;
+for(int i = 0; i < n; i++)
+{
+if (!diff[i][1] && minimum > diff[i][0])
+{
+minimum = diff[i][0];
+index = i;
+}
+}
+return index;
+}
+{
+void sstf()
+int diff[n][2] = { { 0, 0 } };
+int seq[n+1] = {0};
+for(int i = 0; i < n; i++)
+{
+seq[i] = head;
+difference(head, diff);
+int index = findmin(diff, n);
+diff[index][1] = 1;
+total_head_movement += diff[index][0];
+head = request[index];
+}
+Page | 26
+seq[n] = head;
+cout<<"Track Sequence : "<<endl;
+for(int i = 0; i <= n; i++)
+cout <<seq[i];
+cout<<endl<<"The Total Disk Head Movement is: "<<total_head_movement<<endl;
+}
+{
+int main()
+int block;
+cout<<"Enter the Block Size of the Disk: ";
+cin>>block;
+cout<<endl<<"Enter the number of Disk Requests: ";
+cin>>n;
+cout<<"Enter the Disk Requests to be Searched : ";
+for(int i=0;i<n;i++)
+scanf("%d",&request[i]);
+cout<<endl<<"Enter the Current Disk Head Position: ";
+cin>>head;
+sstf(block);
+}
+SCAN Scheduling
+#include<iostream>
+#include<iomanip>
+using namespace std;
+int total_head_movement = 0,n,current_head;
+int request[30];
+void right_display(int block)
+{
+for(int i=0;i<n;i++)
+{
+if(request[i]<current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+cout<<block-1<<" ";
+for(int i=n-1;i>=0;i--)
+{
+if(request[i]>current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+}
+Page | 27
+void left_display()
+{
+for(int i=n-1;i>=0;i--)
+{
+if(request[i]>current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+cout<<0<<" ";
+for(int i=0;i<n;i++)
+{
+if(request[i]<current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+}
+{
+int main()
+int block, direction;
+cout<<"Enter the Block Size of the Disk: ";
+cin>>block;
+cout<<"Enter the number of Disk Requests: ";
+cin>>n;
+cout<<"Enter the Disk Requests to be Searched : ";
+for(int i=0;i<n;i++)
+scanf("%d",&request[i]);
+sort(request,request+n);
+cout<<endl;
+cout<<"Enter the Current Disk Head Position: ";
+cin>>current_head;
+cout<<"Enter Direction [Left - 0; Right - 1]: ";
+cin>>direction;
+cout<<"Track sequence: "<<current_head<<" ";
+if(direction == 0)
+{
+total_head_movement += current_head;
+total_head_movement += request[n-1];
+left_display();
+}
+else
+{
+total_head_movement += block - current_head - 1;
+total_head_movement += block - request[0] - 1;
+right_display(block);
+Page | 28
+}
+cout<<endl<<"The Total Disk Head Movement is: "<<total_head_movement;
+}
+LOOK Scheduling
+#include<iostream>
+#include<iomanip>
+using namespace std;
+int total_head_movement = 0,n,current_head;
+int request[30];
+void right_display()
+{
+for(int i=0;i<n;i++)
+{
+if(request[i]<current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+for(int i=n-1;i>=0;i--)
+{
+if(request[i]>current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+}
+{
+void left_display()
+for(int i=n-1;i>=0;i--)
+{
+if(request[i]>current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+for(int i=0;i<n;i++)
+{
+if(request[i]<current_head)
+continue;
+else
+cout<<request[i]<<" ";
+}
+}
+int main()
+{
+int block, direction;
+Page | 29
+cout<<"Enter the Block Size of the Disk: ";
+cin>>block;
+cout<<"Enter the number of Disk Requests: ";
+cin>>n;
+cout<<"Enter the Disk Requests to be Searched : ";
+for(int i=0;i<n;i++)
+scanf("%d",&request[i]);
+sort(request,request+n);
+cout<<endl;
+cout<<"Enter the Current Disk Head Position: ";
+cin>>current_head;
+cout<<"Enter Direction [Left - 0; Right - 1]: ";
+cin>>direction;
+cout<<"Track sequence: "<<current_head<<" ";
+if(direction == 0)
+{
+total_head_movement += (current_head-request[0]);
+total_head_movement += (request[n-1]- request[0]);
+left_display();
+}
+else
+{
+total_head_movement += (request[n-1] - current_head);
+total_head_movement += (request[n-1] - request[0]);
+right_display();
+}
+cout<<endl<<"The Total Disk Head Movement is: "<<total_head_movement;
+}
+Shell Script
+25 January 2023
+12:55 AM
+Series
+echo "The series is: "
+num=1
+for (( i=1; i<=9; i++ ))
+do
+printf "$num "
+if [ $(($i % 2)) -ne 0 ]
+then
+num=$(($num+2))
+Page | 30
+else
+fi
+done
+echo ""
+num=$(($num-1))
+Prime or not
+echo "Enter number:"
+read num
+count=0
+i=1
+while [ $i -le $num ]
+do
+if [ $(($num % $i)) -eq 0 ]
+then
+count=$(($count+1))
+fi
+i=$(($i + 1))
+done
+if [ $count -eq 2 ]
+then
+echo "Number is prime"
+else
+fi
+echo "Number is not prime"
+Menu Driven
+#! /bin/sh
+echo "area of circle"
+echo
+echo "enter the radius of the circle"
+read radius
+echo "3.14*$radius*$radius" |bc
+echo "Circumference of Circle: "
+echo "area of circle 2*3.14*$radius" | bc
+echo "Area of Triangle: "
+echo "enter base and height"
+read base
+read height
+echo "area of triangle = 0.5*$base*$height" | bc
+echo "Area of Rectangle:"
+echo "enter len and breadth"
+read l
+read b
+echo "area of rectangle = $l*$b" | bc
+Greatest of 3 numbers
+Page | 31
+echo "Enter first number:"
+read n1
+echo "Enter second number:"
+read n2
+echo "Enter third number:"
+read n3
+if [ $n1 -gt $n2 ]
+then
+if [ $n1 -gt $n3 ]
+then
+echo "$n1 is greatest"
+else
+echo "$n3 is greatest"
+fi
+else
+if [ $n2 -gt $n3 ]
+then
+echo "$n2 is greatest"
+else
+echo "$n3 is greatest"
+fi
+fi
+echo "Enter number:"
+read num
+a=0
+b=1
+echo "The fibonacci series is: "
+echo "$a"
+echo "$b"
+num=$(($num-2))
+while [ $num -ne 0 ]
+do
+Fibonacci Series
+c=$(($a + $b))
+echo "$c"
+a=$b
+b=$c
+num=$(($num - 1))
+done
+Leap Year or Not
+echo "Enter year:"
+read yr
+if [ $(($yr % 4)) -eq 0 ]
+then
+else
+fi
+echo "The entered year is leap year"
+echo "The entered year is not leap year"
+Page | 32
+Greatest digit in a number
+echo "Enter a number: "
+read n
+max=0
+while [ $n -ne 0 ]
+do
+if [ $max -le $(($n%10)) ]
+then
+max=$(($n%10))
+n=$(($n/10))
+else
+n=$(($n/10))
+fi
+done
+echo "Maximum digit: $max"
+Smallest digit in a number
+echo "Enter a number: "
+read n
+min=9
+while [ $n -ne 0 ]
+do
+if [ $min -ge $(($n%10)) ]
+then
+min=$(($n%10))
+n=$(($n/10))
+else
+n=$(($n/10))
+fi
+done
+echo "Maximum digit: $min"
+Difference between Second Largest and Second Smallest digit in a number
+echo "Enter a number: "
+read num
+n=$num
+max=$(($n%10))
+s_max=$max
+n=$(($n/10))
+while [ $n -ne 0 ]
+do
+if [ $max -lt $(($n%10)) ]
+then
+s_max=$max
+max=$(($n%10))
+fi
+then
+if [ $s_max -eq $max ]
+s_max=$(($n%10))
+fi
+Page | 33
+if [ $s_max -lt $(($n%10)) ]
+then
+if [ $(($n%10)) -lt $max ]
+then
+s_max=$(($n%10))
+fi
+fi
+n=$(($n/10))
+done
+n=$num
+min=$(($n%10))
+s_min=$min
+n=$(($n/10))
+while [ $n -ne 0 ]
+do
+if [ $min -gt $(($n%10)) ]
+then
+s_min=$min
+min=$(($n%10))
+fi
+if [ $s_min -eq $min ]
+then
+s_min=$(($n%10))
+fi
+then
+if [ $s_min -gt $(($n%10)) ]
+if [ $(($n%10)) -gt $min ]
+then
+s_min=$(($n%10))
+fi
+fi
+n=$(($n/10))
+done
+echo "Difference between second largest digit and second smallest digit = $(($s_max-$s_min))"
+Factorial of a number
+echo "Enter number:"
+read num
+m=$n
+fact=1
+while [ $num -ne 1 ]
+do
+fact=$(($fact * $num))
+num=$(($num-1))
+done
+echo "Factorial of $m = $fact"
+Printing Leap Years
+echo "Leap Years from 2000 to 2500: "
+Page | 34
+for (( i=2000; i<=2500; i++ ))
+do
+if [ $(($i % 4)) -eq 0 ]
+then
+if [ $(($i % 100)) -ne 0 ]
+then
+printf "$i "
+fi
+fi
+then
+if [ $(($i % 400)) -eq 0 ]
+printf "$i "
+fi
+done
+echo ""
+Even or Odd
+echo "Enter number:"
+read num
+if [ $(($num % 2)) -eq 0 ]
+then
+echo "The entered number is Even"
+else
+echo "The entered number is Odd"
+fi
+Squares of n numbers
+echo "Squares of first 25 numbers: "
+for (( i=1; i<=25; i++ ))
+do
+sq=$((i*i))
+printf "$sq "
+done
+echo ""
+Reverse a number
+echo "Enter number:"
+read n
+m=$n
+rev=0
+while [ $n -ne 0 ]
+do
+rev=$(($rev*10 + $(($n % 10)) ))
+n=$(($n / 10))
+done
+echo "Reverse of $m is $rev"
+Sorting arrays
+# Static input of Array
+Page | 35
+arr=(10 8 20 100 12)
+echo "Array in original order"
+echo ${arr[*]}
+# Performing Bubble sort
+for ((i = 0; i<5; i++))
+do
+for((j = 0; j<5-i-1; j++))
+do
+if [ ${arr[j]} -gt ${arr[$((j+1))]} ]
+then
+# swap
+temp=${arr[j]}
+arr[$j]=${arr[$((j+1))]}
+arr[$((j+1))]=$temp
+fi
+done
+done
+echo "Array in sorted order :"
+echo ${arr[*]}
+Matrix addition
+#!/bin/bash
+echo "Enter number of of rows and columns"
+read m
+read n
+declare -A mat
+declare -A mat2
+declare -A res
+# input
+echo "For first matrix:"
+for i in $(seq $m)
+do
+for j in $(seq $n)
+do
+echo "Enter $i,$j element"
+read mat[$i,$j]
+done
+done
+echo "For Second matrix:"
+for i in $(seq $m)
+do
+Page | 36
+for j in $(seq $n)
+do
+echo "Enter $i,$j element"
+read mat2[$i,$j]
+done
+done
+# display
+echo "Elements of first matrix are:"
+for i in $(seq $m)
+do
+for j in $(seq $n)
+do
+echo -n "${mat[$i,$j]} "
+done
+echo
+done
+echo "Elements of second matrix are:"
+for i in $(seq $m)
+do
+for j in $(seq $n)
+do
+echo -n "${mat2[$i,$j]} "
+done
+echo
+done
+# compute
+for i in $(seq $m)
+do
+for j in $(seq $n)
+do
+res[$i,$j]=$(( ${mat[$i,$j]} + ${mat2[$i,$j]} ))
+done
+done
+echo "Elements of result matrix are:"
+for i in $(seq $m)
+do
+for j in $(seq $n)
+do
+echo -n "${res[$i,$j]} "
+done
+echo
+done
+Transpose of matrix
+echo " Enter number of number of rows and columns : "
+Page | 37
+read m
+read n
+declare -A mat
+for((i=1;i<=m;i++))
+do
+for((j=1;j<=n;j++))
+do
+echo "enter $i, $j"
+read mat[$i,$j]
+done
+done
+echo "the input matrix : "
+for((i=1;i<=m;i++))
+do
+for((j=1;j<=n;j++))
+do
+echo " ${mat[$i,$j]}"
+done
+Done
+echo "the transpose matrix : "
+for((i=1;i<=n;i++))
+do
+for((j=1;j<=m;j++))
+do
+echo " ${mat[$j,$i]}"
+done
+done
+echo "enter any number : "
+read n
+echo "the square root of $n is "
+echo "scale=5;sqrt($n)" | bc
+echo "For equation ax^2+bx+c"
+echo "Enter Value of a: "
+read a
+echo "Enter Value of b: "
+read b
+echo "Enter Value of c: "
+read c
+D=$(($b*$b-4*$a*$c))
+B=$((-$b))
+p1=$(($B+$D))
+p2=$(($B-$D))
+Square root of number
+Roots Of Quadratic Equation
+Page | 38
+p3=$((2*$a))
+x1=$(($p1/$p3))
+x2=$(($p2/$p3))
+echo "Roots Of Quadratic Equation Are: "
+echo $x1, $x2
+Floating Point Operations
+read -p "Enter a floating point number :" a
+read -p "Enter another floating point number :" b
+echo "Sum:" echo "$a+$b" | bc
+echo "Difference:" echo "$a-$b" | bc
+echo "Multiplication:" echo "$a*$b" | bc
+echo "Division:" echo "$a/$b" | bc
+echo "Modulus:" echo "$a%$b" | bc
+Copying a file
+#!/bin/bash
+echo -n "Enter source file name : "
+read src
+echo -n "Enter target file name : "
+read targ
+if [ ! -f $src ]
+then
+echo "File $src does not exists"
+exit 1
+elif [ -f $targ ]
+then
+echo "File $targ exist, cannot overwrite"
+exit 2
+fi
+cp $src $targ # copy file
+# store exit status of above cp command. It is use to # determine if shell command operations is
+successful or not
+status=$?
+if [ $status -eq 0 ]
+then
+echo 'File copied successfully'
+else
+echo 'Problem copying file'
+fi
+Copying Files 2
+#!/bin/bash
+copyfile()
+Page | 39
+{
+cp $1 $2
+}
+echo "The files are:"
+echo | ls /home/hypertext
+ch=1
+while [ $ch -ne 0 ]
+do
+echo "Enter the file location to be copied:"
+read sourcefile
+echo "Enter destination:"
+read destination
+copyfile "$sourcefile $destination"
+echo "Do you want to continue?(0/1):"
+read ch
+done
