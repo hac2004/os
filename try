@@ -1,0 +1,571 @@
+#include<iostream>
+#include<conio.h>
+#include<fstream>
+#include<string>
+using namespace std;
+
+void main()
+{
+    int P[20], AT[20], BT[20], FT[20], TAT[20], WT[20], n, temp;
+    float av_tat = 0.0, av_wt = 0.0;
+
+    ifstream infile("data.txt");
+    if (!infile) {
+        cout << "File not found!" << endl;
+        return;
+    }
+
+    n = 0; 
+    while (infile >> P[n] >> AT[n] >> BT[n]) {
+        n++; 
+    }
+    infile.close(); 
+
+ 
+
+    cout << "\nTABLE:";
+    cout << "\nProcesses\tArrival Time\tBurst Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << " " << AT[i] << "\t\t" << " " << BT[i] << "\n";
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < (n - i - 1); j++) {
+            if (AT[j] > AT[j + 1]) {
+          
+                temp = P[j];
+                P[j] = P[j + 1];
+                P[j + 1] = temp;
+
+                temp = AT[j];
+                AT[j] = AT[j + 1];
+                AT[j + 1] = temp;
+
+                temp = BT[j];
+                BT[j] = BT[j + 1];
+                BT[j + 1] = temp;
+            }
+        }
+    }
+
+
+    FT[0] = AT[0] + BT[0];
+    for (int i = 1; i < n; i++) {
+        FT[i] = FT[i - 1] + BT[i];
+    }
+
+
+    for (int i = 0; i < n; i++) {
+        TAT[i] = FT[i] - AT[i];
+        WT[i] = TAT[i] - BT[i];
+        av_tat += TAT[i];
+        av_wt += WT[i];
+    }
+
+
+    av_tat /= n;
+    av_wt /= n;
+
+
+    cout << "\nProcesses\tArrival Time\tBurst Time\tFinish Time\tTurn Around Time\tWaiting Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << FT[i] << "\t\t" << TAT[i] << "\t\t\t" << WT[i] << "\n";
+    }
+
+  
+    cout << "\nThe average Turn Around Time is: " << av_tat << " Time units";
+    cout << "\nThe average Waiting Time is: " << av_wt << " Time units";
+
+    cout << "\nGantt Chart:";
+    cout << "\n.";
+    for (int i = 0; i < n; i++) {
+        for (int j = BT[i]; j > 0; j--) {
+            cout << "-";
+        }
+        cout << ".";
+    }
+    cout << "\n|";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << P[i];
+        for (int j = (BT[i] - 2); j > 0; j--) {
+            cout << " ";
+        }
+        cout << "|";
+    }
+    cout << "\n.";
+    for (int i = 0; i < n; i++) {
+        for (int j = BT[i]; j > 0; j--) {
+            cout << "-";
+        }
+        cout << ".";
+    }
+
+    _getch();
+}
+
+SJF
+#include <iostream>
+#include <conio.h>
+#include <fstream>
+#include <string>
+#include <algorithm>  // For sorting
+using namespace std;
+
+void main()
+{
+    int P[20], AT[20], BT[20], FT[20], TAT[20], WT[20];
+    int n = 0, temp;
+    float av_tat = 0.0, av_wt = 0.0;
+
+    ifstream infile("data.txt");
+    if (!infile) {
+        cout << "File not found!" << endl;
+        return;
+    }
+
+    while (infile >> P[n] >> AT[n] >> BT[n]) {
+        n++;
+    }
+    infile.close();
+
+    // Display input data
+    cout << "\nTABLE:";
+    cout << "\nProcesses\tArrival Time\tBurst Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << " " << AT[i] << "\t\t" << " " << BT[i] << "\n";
+        cout << "\n";
+    }
+
+    // Sort processes by arrival time first
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < (n - i - 1); j++) {
+            if (AT[j] > AT[j + 1]) {
+                swap(P[j], P[j + 1]);
+                swap(AT[j], AT[j + 1]);
+                swap(BT[j], BT[j + 1]);
+            }
+        }
+    }
+
+    // SJF Scheduling Logic
+    bool isCompleted[20] = { false };  // To track completed processes
+    int completed = 0, time = 0;
+    while (completed < n) {
+        int minBurstTime = 1000000, minIndex = -1;
+
+        
+        for (int i = 0; i < n; i++) {
+            if (AT[i] <= time && !isCompleted[i] && BT[i] < minBurstTime) {
+                minBurstTime = BT[i];
+                minIndex = i;
+            }
+        }
+
+        if (minIndex != -1) {
+            // Update the finish time of the selected process
+            FT[minIndex] = time + BT[minIndex];
+            isCompleted[minIndex] = true;
+            completed++;
+            time += BT[minIndex];  
+        }
+        else {
+          
+            time++;
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        TAT[i] = FT[i] - AT[i];  // Turnaround time = Finish time - Arrival time
+        WT[i] = TAT[i] - BT[i];  // Waiting time = Turnaround time - Burst time
+        av_tat += TAT[i];
+        av_wt += WT[i];
+    }
+
+    av_tat /= n;
+    av_wt /= n;
+
+    // Display results
+    cout << "\n";
+    cout << "Processes\tArrival Time\tBurst Time\tFinish Time\tTurn Around Time\tWaiting Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << FT[i] << "\t\t" << TAT[i] << "\t\t\t" << WT[i] << "\n";
+    }
+
+    cout << "\nThe average Turn Around Time is: " << av_tat << " Time units";
+    cout << "\nThe average Waiting Time is: " << av_wt << " Time units";
+
+  
+
+    _getch();
+}
+
+ROUND ROBIN 
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+    int P[20], AT[20], BT[20], RT[20], FT[20], TAT[20], WT[20];
+    int queue[20], front = 0, rear = 0;
+    int n = 0, qt;
+    float av_tat = 0, av_wt = 0;
+
+    // Reading input from file
+    ifstream inputFile("data.txt");
+    if (!inputFile) {
+        cout << "error";
+        return ;
+    }
+
+    while (inputFile >> P[n] >> AT[n] >> BT[n]) {
+        RT[n] = BT[n]; // Initialize Remaining Time
+        n++;
+    }
+    inputFile.close();
+
+    cout << "Number of processes read from file: " << n << "\n";
+    cout << "Enter the time quantum: ";
+    cin >> qt;
+
+    // Add processes to the queue based on arrival time
+    bool isProcessInQueue[20] = { false };
+    queue[rear++] = 0;  // Start with the first process
+    isProcessInQueue[0] = true;
+    int time = 0, completed = 0;
+    // Round Robin logic
+    while (completed < n) {
+        int index = queue[front++]; // Get the next process from the queue
+
+        // Execute the process for time quantum or till it finishes
+        int runTime = min(RT[index], qt);
+        time += runTime;
+        RT[index] -= runTime;
+
+        // Check if process is finished
+        if (RT[index] == 0) {
+            FT[index] = time;
+            TAT[index] = FT[index] - AT[index];
+            WT[index] = TAT[index] - BT[index];
+            av_tat += TAT[index];
+            av_wt += WT[index];
+            completed++;
+        }
+
+        // Add newly arrived processes to the queue
+        for (int i = 0; i < n; i++) {
+            if (AT[i] <= time && !isProcessInQueue[i] && RT[i] > 0) {
+                queue[rear++] = i;
+                isProcessInQueue[i] = true;
+            }
+        }
+
+        // Re-add the current process to the end of the queue if it's not finished
+        if (RT[index] > 0) {
+            queue[rear++] = index;
+        }
+    }
+
+    // Output results
+    cout << "\nProcesses\tArrival Time\tBurst Time\tFinish Time\tTurnaround Time\tWaiting Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << FT[i]
+            << "\t\t" << TAT[i] << "\t\t" << WT[i] << "\n";
+    }
+
+    cout << "\nAverage Turnaround Time: " << (av_tat / n) << " units";
+    cout << "\nAverage Waiting Time: " << (av_wt / n) << " units";
+
+}
+
+
+PRIORITY
+#include<iostream>
+#include<fstream>
+#include<string>
+using namespace std;
+
+void main() {
+    int P[20], AT[20], BT[20], WT[20], FT[20], TAT[20], Pri[20];
+    float av_tat = 0.0, av_wt = 0.0;
+    int n = 0, temp = 0;
+
+    ifstream infile("data.txt");
+    if (!infile) {
+        cout << "Error reading the file!";
+        return;
+    }
+
+    // Read input data
+    while (infile >> P[n] >> AT[n] >> BT[n] >> Pri[n]) {
+        n++;
+    }
+
+    // Display process table
+    cout << "\nProcesses\tArrival Time\tBurst Time\tPriority\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << Pri[i] << "\n";
+    }
+
+    // Sort processes by Arrival Time first, then by Priority
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (AT[j] > AT[j + 1] || (AT[j] == AT[j + 1] && Pri[j] > Pri[j + 1])) {
+                // Swap processes
+                swap(P[j], P[j + 1]);
+                swap(AT[j], AT[j + 1]);
+                swap(BT[j], BT[j + 1]);
+                swap(Pri[j], Pri[j + 1]);
+            }
+        }
+    }
+
+    int time = 0, completed=0;
+    bool isComplete[20] = { false };
+
+
+
+    while (completed < n) {
+        int minIndex = -1;
+        int maxPri = 1000; 
+
+
+        for (int i = 0; i < n; i++) {
+            if (AT[i] <= time && !isComplete[i] && Pri[i] < maxPri) {
+                maxPri = Pri[i];
+                minIndex = i;
+            }
+        }
+
+        if (minIndex != -1) {
+            FT[minIndex] = time + BT[minIndex];
+            TAT[minIndex] = FT[minIndex] - AT[minIndex];
+            WT[minIndex] = TAT[minIndex] - BT[minIndex];
+            av_tat = av_tat + TAT[minIndex];
+            av_wt = av_wt + WT[minIndex];
+            isComplete[minIndex] = true;
+            completed++;
+            time = FT[minIndex];
+   
+        }
+        else {
+        
+            time++;
+        }
+    }
+
+    // Calculate averages
+    av_tat /= n;
+    av_wt /= n;
+
+    // Output the results
+    cout << "\nProcesses\tArrival Time\tBurst Time\tFinish Time\tTurn Around Time\tWaiting Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << FT[i] << "\t\t" << TAT[i] << "\t\t\t" << WT[i] << "\n";
+    }
+
+    // Output the averages
+    cout << "\nThe average Turn Around Time is: " << av_tat << " Time units";
+    cout << "\nThe average Waiting Time is: " << av_wt << " Time units";
+}
+
+PRIORITY PREMPTED
+#include<iostream>
+#include<fstream>
+#include<string>
+using namespace std;
+
+void main() {
+    int P[20], AT[20], BT[20], WT[20], FT[20], TAT[20], Pri[20], RT[20]; 
+    float av_tat = 0.0, av_wt = 0.0;
+    int n = 0, temp = 0;
+
+    ifstream infile("data.txt");
+    if (!infile) {
+        cout << "Error reading the file!";
+        return;
+    }
+
+ 
+    while (infile >> P[n] >> AT[n] >> BT[n] >> Pri[n]) {
+        RT[n] = BT[n]; 
+        n++;
+    }
+
+    // Display process table
+    cout << "\nProcesses\tArrival Time\tBurst Time\tPriority\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << Pri[i] << "\n";
+    }
+
+    int time = 0;
+    int completed = 0;
+    bool isComplete[20] = { false };
+
+    // Preemptive Scheduling Logic
+    while (completed < n) {
+        int minIndex = -1;
+        int maxPri = 1000;
+
+        
+        for (int i = 0; i < n; i++) {
+            if (AT[i] <= time && !isComplete[i] && Pri[i] < maxPri && RT[i] > 0) {
+                maxPri = Pri[i];
+                minIndex = i;
+            }
+        }
+
+        if (minIndex != -1) {
+            
+            RT[minIndex]--;
+            time++;
+
+            if (RT[minIndex] == 0) {
+                
+                FT[minIndex] = time;
+
+
+                TAT[minIndex] = FT[minIndex] - AT[minIndex];
+                WT[minIndex] = TAT[minIndex] - BT[minIndex];
+                av_tat += TAT[minIndex];
+                av_wt += WT[minIndex];
+                isComplete[minIndex] = true;
+                completed++;
+            }
+        }
+        else {
+           
+            time++;
+        }
+    }
+
+    
+    av_tat /= n;
+    av_wt /= n;
+
+    // Output the results
+    cout << "\nProcesses\tArrival Time\tBurst Time\tFinish Time\tTurn Around Time\tWaiting Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << FT[i] << "\t\t" << TAT[i] << "\t\t\t" << WT[i] << "\n";
+    }
+
+    // Output the averages
+    cout << "\nThe average Turn Around Time is: " << av_tat << " Time units";
+    cout << "\nThe average Waiting Time is: " << av_wt << " Time units";
+}
+
+
+SRTN
+#include <iostream>
+#include <conio.h>
+#include <fstream>
+#include <algorithm>  // For std::min
+using namespace std;
+
+void main() {
+    int P[20], AT[20], BT[20], FT[20], TAT[20], WT[20], RT[20]; // RT for remaining burst times
+    int n = 0, temp;
+    float av_tat = 0.0, av_wt = 0.0;
+
+    // Read data from file
+    ifstream infile("data.txt");
+    if (!infile) {
+        cout << "File not found!" << endl;
+        return;
+    }
+
+    while (infile >> P[n] >> AT[n] >> BT[n]) {
+        RT[n] = BT[n]; // Initialize remaining burst time as burst time
+        n++;
+    }
+    infile.close();
+
+    // Display input data
+    cout << "\nTABLE:";
+    cout << "\nProcesses\tArrival Time\tBurst Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << " " << AT[i] << "\t\t" << " " << BT[i] << "\n";
+        cout << "\n";
+    }
+
+    // Sorting processes based on arrival time (SRTN preemption requires this)
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < (n - i - 1); j++) {
+            if (AT[j] > AT[j + 1]) {
+                // Swap processes, arrival times, and burst times
+                temp = P[j + 1];
+                P[j + 1] = P[j];
+                P[j] = temp;
+
+                temp = AT[j + 1];
+                AT[j + 1] = AT[j];
+                AT[j] = temp;
+
+                temp = BT[j + 1];
+                BT[j + 1] = BT[j];
+                BT[j] = temp;
+
+                temp = RT[j + 1];
+                RT[j + 1] = RT[j];
+                RT[j] = temp;
+            }
+        }
+    }
+
+    // SRTN Scheduling Logic
+    int time = 0, completed = 0;
+    bool isCompleted[20] = { false };
+
+    // Initialize finish times and start by selecting the first process
+    while (completed < n) {
+        int minIndex = -1;
+        int minRemainingTime = 1000000; // Arbitrarily large number
+
+        // Find the process with the shortest remaining time that has arrived
+        for (int i = 0; i < n; i++) {
+            if (AT[i] <= time && !isCompleted[i] && RT[i] < minRemainingTime) {
+                minRemainingTime = RT[i];
+                minIndex = i;
+            }
+        }
+
+        // If no process is ready to execute, just increase time
+        if (minIndex == -1) {
+            time++;
+            continue;
+        }
+
+        // Execute the selected process
+        RT[minIndex]--; // Decrement remaining time
+        if (RT[minIndex] == 0) {
+            FT[minIndex] = time + 1; // Process finishes
+            isCompleted[minIndex] = true;
+            completed++;
+        }
+
+        time++; // Increment time
+    }
+
+    // Calculating Turnaround Time and Waiting Time
+    for (int i = 0; i < n; i++) {
+        TAT[i] = FT[i] - AT[i];  // Turnaround time = Finish time - Arrival time
+        WT[i] = TAT[i] - BT[i];  // Waiting time = Turnaround time - Burst time
+        av_tat += TAT[i];
+        av_wt += WT[i];
+    }
+
+    av_tat /= n;
+    av_wt /= n;
+
+    // Display results
+    cout << "\n";
+    cout << "Processes\tArrival Time\tBurst Time\tFinish Time\tTurn Around Time\tWaiting Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << " " << P[i] << "\t\t" << AT[i] << "\t\t" << BT[i] << "\t\t" << FT[i] << "\t\t" << TAT[i] << "\t\t\t" << WT[i] << "\n";
+        cout << "\n";
+    }
+
+    cout << "\nThe average Turn Around Time is: " << av_tat << " Time units";
+    cout << "\nThe average Waiting Time is: " << av_wt << " Time units";
+
+    _getch();
+}
